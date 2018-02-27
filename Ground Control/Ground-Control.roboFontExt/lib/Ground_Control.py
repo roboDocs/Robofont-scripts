@@ -37,7 +37,7 @@ class BenchToolBox:
                 return "* Unamed Font"
         else:
             return ""
-            print "toolBox.getFontName: No Font provided"
+            print("toolBox.getFontName: No Font provided")
 
     def getFontByName(self, setOfFonts, fontName):
 
@@ -221,7 +221,7 @@ class GroundControl:
     def __init__(self):
 
         if len(AllFonts()) == 0:
-            print "Please open at least one font before using Ground Control"
+            print("Please open at least one font before using Ground Control")
             return
 
         # [windowWidth, maxWindowWidth, minWindowWidth]
@@ -461,7 +461,7 @@ class GroundControl:
             thisLineMethAttr = getattr(self.w.allLines, self.lineNames[i] + "MethAttr")
             trackingValue = self.globalTrackingValue + thisLineMethAttr.localTrackingValue
 
-            print self.globalTrackingValue
+            print(self.globalTrackingValue)
 
             benchToolBox.modifyTracking(thisLineMethAttr.font, trackingValue)
 

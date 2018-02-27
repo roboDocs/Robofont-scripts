@@ -7,7 +7,14 @@ Custom CocoaPen that displays a glyph with OnCurve & OffCurve points
 
 from fontTools.pens.basePen import BasePen
 from fontTools.pens.cocoaPen import CocoaPen
-from robofab.pens.pointPen import AbstractPointPen
+
+from mojo.roboFont import version
+# RF3
+if version >= "3.0.0":
+    from ufoLib.pointPen.AbstractPointPen import AbstractPointPen
+# RF1
+else:
+    from robofab.pens.pointPen import AbstractPointPen
 
 class CocoaGlyphPen(BasePen):
 
@@ -91,13 +98,21 @@ class CocoaGlyphPen(BasePen):
         cocoaPen.lineTo((x, y))
 
 from math import floor, cos, sin, hypot, pi, atan2, degrees, sqrt
-from robofab.pens.filterPen import thresholdGlyph
-from robofab.objects.objectsRF import RGlyph, RPoint
+
+# RF3
+if version >= "3.0.0":
+    from fontPens.thresholdPen import thresholdGlyph
+    from fontParts.nonelab import RGlyph, RPoint
+# RF1
+else:
+    from robofab.pens.filterPen import thresholdGlyph
+    from robofab.objects.objectsRF import RGlyph, RPoint
+
 from mojo.drawingTools import fill, stroke, rect, oval, save, restore, text, scale, fontSize
 from mojo.UI import CurrentGlyphWindow
 from AppKit import NSColor
 from lib.tools.bezierTools import intersectCubicCubic, intersectCubicLine, intersectLineLine
-from robofab.misc.bezierTools import solveCubic
+from fontTools.misc.bezierTools import solveCubic
 from time import time
 from copy import deepcopy
 
@@ -109,7 +124,11 @@ def roundFloat(f):
     error = 1000000.
     return round(f*error)/error
 
-def pointOnACurve((x1, y1), (cx1, cy1), (cx2, cy2), (x2, y2), value):
+def pointOnACurve(p1, c1, c2, p2, value):
+    x1, y1 = p1
+    cx1, cy1 = c1
+    cx2, cy2 = c2
+    x2, y2 = p2
     dx = x1
     cx = (cx1 - dx) * 3.0
     bx = (cx2 - cx1) * 3.0 - cx
@@ -126,7 +145,8 @@ def pointOnACurve((x1, y1), (cx1, cy1), (cx2, cy2), (x2, y2), value):
 Other custom utility methods
 '''
 
-def curveLength((a1, h1, h2, a2)):
+def curveLength(params):
+    a1, h1, h2, a2 = params
     l = 0
     ax, ay = a1
     bx, by = h1
@@ -165,7 +185,8 @@ def highlight(point):
     restore()
 
 # Used mostly for testing purposes
-def screenPrint(string, (x, y)):
+def screenPrint(string, pos):
+    x, y = pos
     from mojo.UI import CurrentGlyphWindow
     s = CurrentGlyphWindow().getGlyphViewScale()
     save()
@@ -280,11 +301,13 @@ class IntelPoint(object):
             return self.__class__((newX, newY), self.segmentType, self.smooth)
         raise ValueError
 
-    def move(self, (mx, my)):
+    def move(self, m):
+        mx, my = m
         self.x += mx
         self.y += my
 
-    def rotate(self, angle, (rx, ry)):
+    def rotate(self, angle, r):
+        rx, ry = r
         xDelta = self.x - rx
         yDelta = self.y - ry
         d = hypot(xDelta, yDelta)
@@ -569,7 +592,8 @@ class IntelContour(object):
         if not isinstance(otherOutline, self.__class__):
             return
 
-    def move(self, (mx, my)):
+    def move(self, m):
+        mx, my = m
         for point in self.points:
             point.move((mx, my))
 
@@ -1272,7 +1296,8 @@ class IntelContour(object):
                 return startIndex, newSegment
         return None, None
 
-    def splitSegmentAtT(self, pt0, pt1, pt2, pt3, (x, y), t):
+    def splitSegmentAtT(self, pt0, pt1, pt2, pt3, pos, t):
+        x, y = pos
         PointClass = self._pointClass
         m1 = pt0.interpolatePoint(pt1, t)
         m2 = pt1.interpolatePoint(pt2, t)
@@ -1606,10 +1631,10 @@ class IntelContour(object):
         for point in points:
             pointView = '%s  %s  %s' % (point.x, point.y, point.segmentType)
             digest.append(pointView)
-        print len(digest)
-        print '\n'.join(digest)
-        print '-'
-        print '\n'
+        print(len(digest))
+        print('\n'.join(digest))
+        print('-')
+        print('\n')
 
 
     '''
@@ -1734,7 +1759,8 @@ class IntelGlyph(object):
             return self.contours[index]
         raise IndexError
 
-    def move(self, (mx, my)):
+    def move(self, m):
+        mx, my = m
         for contour in self.contours:
             contour.move((mx, my))
 
