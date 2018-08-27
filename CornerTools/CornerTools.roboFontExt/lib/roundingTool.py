@@ -1,9 +1,5 @@
 #coding=utf-8
 
-from importlib import reload
-import glyphObjects
-reload(glyphObjects)
-
 from glyphObjects import IntelGlyph
 
 from mojo.events import BaseEventTool, EditingTool, installTool, addObserver, removeObserver

@@ -5,10 +5,6 @@ from __future__ import division
 Custom CocoaPen that displays a glyph with OnCurve & OffCurve points
 '''
 
-from importlib import reload
-import fontTools.pens.basePen
-reload(fontTools.pens.basePen)
-
 from fontTools.pens.basePen import BasePen
 from fontTools.pens.cocoaPen import CocoaPen
 
