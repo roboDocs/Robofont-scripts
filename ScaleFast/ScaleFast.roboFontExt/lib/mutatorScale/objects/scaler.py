@@ -287,7 +287,7 @@ class MutatorScaleEngine:
             self.mutatorErrors.append({'error':e.message})
             return None
 
-    def _getTargetLocation(self, stemTarget, masters, workingStems, (xScale, yScale)):
+    def _getTargetLocation(self, stemTarget, masters, workingStems, scale):
         """
         Return a proper Location object for a scaled glyph instance,
         the essential part lies in the conversion of stem values.
@@ -295,6 +295,7 @@ class MutatorScaleEngine:
         a glyph with proper stem widths without requiring two-axes interpolation.
         """
 
+        xScale, yScale = scale
         targetVstem, targetHstem = None, None
 
         try: targetVstem, targetHstem = stemTarget

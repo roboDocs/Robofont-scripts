@@ -2,7 +2,14 @@
 from __future__ import division
 from math import atan2, tan, hypot, cos, degrees, radians
 
-from robofab.world import RGlyph
+from mojo.roboFont import version
+# RF3
+if version >= "3.0.0":
+    from mojo.roboFont import RGlyph
+# RF1
+else:
+    from robofab.world import RGlyph
+    from booleanOperations.booleanGlyph import BooleanGlyph
 
 import fontTools
 import fontTools.misc.bezierTools as bezierTools
@@ -10,9 +17,7 @@ import fontTools.misc.arrayTools as arrayTools
 import fontTools.misc.transform as transform
 from fontTools.pens.boundsPen import BoundsPen
 
-from mutatorScale.booleanOperations.booleanGlyph import BooleanGlyph
 from mutatorScale.pens.utilityPens import CollectSegmentsPen
-
 
 
 def makeListFontName(font):

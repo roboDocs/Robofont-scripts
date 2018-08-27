@@ -1,6 +1,6 @@
 # coding=utf-8
 # Loïc Sander — 2014
-from baseParameter import SingleValueParameter
+from .baseParameter import SingleValueParameter
 from vanilla import Group, Slider, EditText, TextBox, CheckBox
 
 class BaseParameterVanillaInput:

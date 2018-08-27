@@ -1,6 +1,13 @@
 #coding=utf-8
 from fontTools.pens.basePen import BasePen
-from robofab.pens.pointPen import AbstractPointPen
+
+from mojo.roboFont import version
+# RF3
+if version >= "3.0.0":
+    from ufoLib.pointPen import AbstractPointPen
+# RF1
+else:
+    from robofab.pens.pointPen import AbstractPointPen
 
 class ClockwiseTestPointPen(AbstractPointPen):
 

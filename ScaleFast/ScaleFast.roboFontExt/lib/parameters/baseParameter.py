@@ -261,16 +261,16 @@ class SingleValueParameter(object):
     def hasMaster(self):
         return self.master is not None
 
-    def setLimits(self, (minValue, maxValue)):
-        self.limits = (minValue, maxValue)
+    def setLimits(self, minMaxValues):
+        self.limits = minMaxValues
         for slave in self.slaves:
-            slave.limits = (minValue, maxValue)
+            slave.limits = minMaxValues
             slave.value = slave.get()
             slave.update()
 
     def _checkValue(self, value):
         if isinstance(value, str) or isinstance(value, unicode):
-            s = re.search('(\+\+|--)(\d*\.?\d*)', value)
+            s = re.search(r'(\+\+|--)(\d*\.?\d*)', value)
             if s is not None:
                 offset = float(s.group(2))
                 if s.group(1) == '++':

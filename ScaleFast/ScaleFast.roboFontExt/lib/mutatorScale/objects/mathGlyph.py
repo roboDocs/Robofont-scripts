@@ -1,7 +1,36 @@
 import weakref
-from robofab.world import RGlyph
-from robofab.pens.pointPen import BasePointToSegmentPen, AbstractPointPen
-from robofab.objects.objectsBase import addPt, subPt, mulPt, BaseGlyph
+
+from mojo.roboFont import version
+
+# RF3
+if version >= "3.0.0":
+    from mojo.roboFont import RGlyph
+    from ufoLib.pointPen import BasePointToSegmentPen, AbstractPointPen
+    from fontParts.base import BaseGlyph
+
+    def addPt(ptA, ptB):
+        """Add two vectors"""
+        return ptA[0] + ptB[0], ptA[1] + ptB[1]
+
+    def subPt(ptA, ptB):
+        """Substract two vectors"""
+        return ptA[0] - ptB[0], ptA[1] - ptB[1]
+
+    def mulPt(ptA, scalar):
+        """Multiply a vector with scalar"""
+        if not isinstance(scalar, tuple):
+            f1 = scalar
+            f2 = scalar
+        else:
+            f1, f2 = scalar
+        return ptA[0]*f1, ptA[1]*f2
+
+# RF1
+else:
+    from robofab.world import RGlyph
+    from robofab.pens.pointPen import BasePointToSegmentPen, AbstractPointPen
+    from robofab.objects.objectsBase import addPt, subPt, mulPt, BaseGlyph
+
 from math import radians, tan, cos, sin, pi
 
 '''

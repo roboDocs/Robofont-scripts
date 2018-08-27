@@ -122,7 +122,7 @@ class ScaleFastController(object):
     def __init__(self):
 
         if CurrentFont() is None:
-            print u'ScaleFast — No open font.'
+            print(u'ScaleFast — No open font.')
             return
 
         self.availableFonts = {makeListFontName(font):{'font':font, 'selected':False, 'vstem':None, 'hstem':None, 'familyName':font.info.familyName, 'styleName':font.info.styleName} for font in AllFonts()}

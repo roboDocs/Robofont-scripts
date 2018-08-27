@@ -2,7 +2,14 @@
 from __future__ import division
 
 from math import pi, cos, sin, hypot
-from robofab.world import RGlyph
+
+from mojo.roboFont import version
+# RF3
+if version >= "3.0.0":
+    from mojo.roboFont import RGlyph
+# RF1
+else:
+    from robofab.world import RGlyph
 
 _LETTERFORMS = {
         'interpolation':[

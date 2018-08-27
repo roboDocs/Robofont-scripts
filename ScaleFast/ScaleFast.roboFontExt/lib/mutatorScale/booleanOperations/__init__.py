@@ -1,1 +1,1 @@
-from booleanOperationManager import BooleanOperationManager
+from .booleanOperationManager import BooleanOperationManager
