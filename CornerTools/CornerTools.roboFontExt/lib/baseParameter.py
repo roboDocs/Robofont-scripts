@@ -241,8 +241,8 @@ class SingleValueParameter(object):
             self.master = None
 
     def _checkValue(self, value):
-        if isinstance(value, str) or isinstance(value, unicode):
-            s = re.search('(\+\+|--)(\d*\.?\d*)', value)
+        if isinstance(value, str): # or isinstance(value, unicode):
+            s = re.search(r'(\+\+|--)(\d*\.?\d*)', value)
             if s is not None:
                 offset = float(s.group(2))
                 if s.group(1) == '++':

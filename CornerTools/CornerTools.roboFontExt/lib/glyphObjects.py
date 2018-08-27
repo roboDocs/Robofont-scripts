@@ -5,16 +5,21 @@ from __future__ import division
 Custom CocoaPen that displays a glyph with OnCurve & OffCurve points
 '''
 
+from importlib import reload
+import fontTools.pens.basePen
+reload(fontTools.pens.basePen)
+
 from fontTools.pens.basePen import BasePen
 from fontTools.pens.cocoaPen import CocoaPen
 
 from mojo.roboFont import version
 # RF3
 if version >= "3.0.0":
-    from ufoLib.pointPen.AbstractPointPen import AbstractPointPen
+    from ufoLib.pointPen import AbstractPointPen, PointToSegmentPen
 # RF1
 else:
     from robofab.pens.pointPen import AbstractPointPen
+    from robofab.pens.adapterPens import PointToSegmentPen
 
 class CocoaGlyphPen(BasePen):
 
@@ -100,9 +105,9 @@ class CocoaGlyphPen(BasePen):
 from math import floor, cos, sin, hypot, pi, atan2, degrees, sqrt
 
 # RF3
-if version >= "3.0.0":
+if version >= "3.0":
     from fontPens.thresholdPen import thresholdGlyph
-    from fontParts.nonelab import RGlyph, RPoint
+    from mojo.roboFont import RGlyph, RPoint
 # RF1
 else:
     from robofab.pens.filterPen import thresholdGlyph
@@ -145,8 +150,8 @@ def pointOnACurve(p1, c1, c2, p2, value):
 Other custom utility methods
 '''
 
-def curveLength(params):
-    a1, h1, h2, a2 = params
+def curveLength(curve):
+    a1, h1, h2, a2 = curve
     l = 0
     ax, ay = a1
     bx, by = h1
@@ -547,7 +552,7 @@ class IntelContour(object):
     _pointClass = IntelPoint
 
     def __init__(self, baseContour=None, index=0):
-        super(IntelContour, self).__init__()
+        # super(IntelContour, self).__init__()
         self.points = []
         self._source = baseContour
         if baseContour is not None:
@@ -741,7 +746,7 @@ class IntelContour(object):
             total = 0
             pointCount = len(points)
 
-            for index1 in xrange(pointCount):
+            for index1 in range(pointCount):
                 index2 = (index1 + 1) % pointCount
                 x1, y1 = points[index1]
                 x2, y2 = points[index2]
@@ -1621,7 +1626,6 @@ class IntelContour(object):
         pointPen.endPath()
 
     def draw(self, pen):
-        from robofab.pens.adapterPens import PointToSegmentPen
         pointPen = PointToSegmentPen(pen)
         self.drawPoints(pointPen)
 
@@ -1727,7 +1731,15 @@ class IntelGlyph(object):
     def __init__(self, glyph=None):
         self._sourceGlyph = glyph
         if glyph is not None:
-            if not len(glyph.selection):
+
+            # RF3
+            if version >= "3.0.0":
+                selectedPoints = glyph.selectedPoints            
+            # RF1
+            else:
+                selectedPoints = glyph.selection
+
+            if not len(selectedPoints):
                 '''
                 If there’s no points selection to get
                 go through the IntelOutlinePen (faster)
@@ -1737,7 +1749,7 @@ class IntelGlyph(object):
                 self.contours = pen.get()
                 for contour in self.contours:
                     contour.cleanCurves()
-            elif len(glyph.selection):
+            elif len(selectedPoints):
                 '''
                 If there are selected points
                 go through appendContour to gather selection info

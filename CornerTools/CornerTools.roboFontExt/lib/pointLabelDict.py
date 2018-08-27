@@ -47,7 +47,7 @@ class PointLabelDict(object):
         self.labels[key] = value
 
     def __getitem__(self, key):
-        if self.labels.has_key(key):
+        if key in self.labels:
             return self.labels[key]
         return False
         raise KeyError

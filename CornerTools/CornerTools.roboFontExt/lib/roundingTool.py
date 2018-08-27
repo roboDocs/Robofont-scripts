@@ -1,9 +1,14 @@
 #coding=utf-8
 
+from importlib import reload
+import glyphObjects
+reload(glyphObjects)
+
 from glyphObjects import IntelGlyph
 
 from mojo.events import BaseEventTool, EditingTool, installTool, addObserver, removeObserver
 from mojo.drawingTools import *
+from mojo.roboFont import version
 from AppKit import NSColor, NSBezierPath, NSImage
 from robofab.misc.arrayTools import pointInRect
 from math import hypot, pi
@@ -254,7 +259,15 @@ class RoundingTool(BaseEventTool):
             pen = self._sourceGlyph.getPointPen()
             self._roundedGlyph.drawPoints(pen)
             self._sourceGlyph.performUndo()
-            self._sourceGlyph.update()
+
+            # RF3
+            if version >= "3.0.0":
+                self._sourceGlyph.changed()
+            # RF1
+            else:
+                selectedPoints = glyph.selection
+                self._sourceGlyph.update()
+            
             self.updateRoundablePoints()
 
     def stripContours(self, glyph):

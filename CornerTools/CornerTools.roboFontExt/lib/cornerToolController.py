@@ -1,8 +1,13 @@
+from importlib import reload
+import glyphObjects
+reload(glyphObjects)
+
 from glyphObjects import IntelGlyph
 from vanillaParameterObjects import VanillaSingleValueParameter, ParameterSliderTextInput
 from vanilla import FloatingWindow, GradientButton, EditText, TextBox, RadioGroup, Group, Box
 from mojo.events import addObserver, removeObserver
 from mojo.UI import UpdateCurrentGlyphView
+from mojo.roboFont import version
 from math import pi
 from AppKit import NSColor
 
@@ -83,9 +88,18 @@ class CornerController:
 
     def getSelection(self, notification=None):
         glyph = CurrentGlyph()
-        if len(glyph.selection) == 0:
+
+        # RF3
+        if version >= "3.0.0":
+            selectedPoints = glyph.selectedPoints            
+        # RF1
+        else:
+            selectedPoints = glyph.selection
+
+        if len(selectedPoints) == 0:
             return []
-        elif len(glyph.selection) > 0:
+
+        elif len(selectedPoints) > 0:
             iG = IntelGlyph(glyph)
             if self.currentMode == 'Build':
                 selection = iG.getSelection(True)
@@ -107,7 +121,15 @@ class CornerController:
         if (sender is not None) and isinstance(sender, dict):
             if 'notificationName' in sender and sender['notificationName'] == 'mouseDragged':
                 g = sender['glyph']
-                if not len(g.selection):
+
+                # RF3
+                if version >= "3.0.0":
+                    selectedPoints = g.selectedPoints            
+                # RF1
+                else:
+                    selectedPoints = g.selection
+
+                if not len(selectedPoints):
                     return
         self.previewGlyph = self.makeCornerGlyph()
         UpdateCurrentGlyphView()

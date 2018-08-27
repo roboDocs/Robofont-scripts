@@ -1,10 +1,11 @@
 #coding=utf-8
+from __future__ import print_function
 import sys
 import imp
 import json
 from collections import OrderedDict
 
-from robofab.world import RGlyph
+from mojo.roboFont import RGlyph
 from defcon import addRepresentationFactory, removeRepresentationFactory
 from booleanOperations.booleanGlyph import BooleanGlyph
 
@@ -207,7 +208,7 @@ class PenBallFilter(PenBallBaseFilter):
             f.close()
             return result
         except IOError as e:
-            print 'Couldn’t load file {0}'.format(e)
+            print('Couldn’t load file {0}'.format(e))
 
 
     def _loadFilterFromModule(self, module, functionName):
@@ -345,10 +346,10 @@ class PenBallFilterChain(PenBallBaseFilter):
             subfilterName, argumentName, order = argumentName.split(FILTERARGSEPARATOR)
             return subfilterName, argumentName, int(order)
         except ValueError:
-            print 'Invalid argument: {0}, should be in the form <subfilter{1}argumentName{1}order>'.format(argumentName, FILTERARGSEPARATOR)
+            print('Invalid argument: {0}, should be in the form <subfilter{1}argumentName{1}order>'.format(argumentName, FILTERARGSEPARATOR))
             return None, None, None
         except Exception as e:
-            print e
+            print(e)
 
     def _makeGlyphFilter(self):
 
@@ -578,7 +579,7 @@ class PenBallFiltersManager(object):
             self.loadFiltersList(filtersList)
             filtersFile.close()
         except IOError as e:
-            print 'Could not open file {0}'.format(e)
+            print('Could not open file {0}'.format(e))
 
     def saveFiltersToJSON(self, filePath):
         filtersToFile = self.asList()
