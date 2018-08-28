@@ -10,6 +10,7 @@ Version history
 1. november 2014
 2. march 2015
 3. june 2015
+4. august 2018 (RF3 updates by Gustavo Ferreira)
 —
 ScaleFast is a Robofont extension with a simple mission:
 trying to maintain stem width while you transform a glyph.
@@ -19,6 +20,14 @@ through interpolation, powered by Erik van Blokland’s MutatorMath.
 
 Thanks to Frederik Berlaen for the inspiration.
 """
+
+import os
+import sys
+
+mutatorScaleLibFolder = os.path.join(os.path.join(os.getcwd(), 'mutatorScaleLib'), 'lib')
+if not mutatorScaleLibFolder in sys.path:
+    sys.path.insert(0, mutatorScaleLibFolder)
+
 from mutatorScale.objects.scaler import MutatorScaleEngine
 from mutatorScale.utilities.fontUtils import makeListFontName, getRefStems
 

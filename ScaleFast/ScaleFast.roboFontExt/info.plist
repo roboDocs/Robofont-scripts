@@ -8,7 +8,7 @@
 			<key>path</key>
 			<string>scaleFast.py</string>
 			<key>preferredName</key>
-			<string>Launch ScaleFast</string>
+			<string>ScaleFast</string>
 			<key>shortKey</key>
 			<string></string>
 		</dict>
@@ -32,7 +32,7 @@
 	<key>timeStamp</key>
 	<real>1433764325.401228</real>
 	<key>version</key>
-	<string>0.93.8</string>
+	<string>1.0.0</string>
     <key>repository</key>
     <string>loicsander/Robofont-scripts</string>
     <key>extensionPath</key>
