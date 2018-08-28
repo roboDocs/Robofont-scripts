@@ -550,7 +550,7 @@ class ScaleFastController(object):
         # RF3
         if version >= "3.0.0":
             if newFont:
-                font.showInterface()
+                font.openInterface()
             font.changed()
         # RF1
         else:
@@ -775,7 +775,14 @@ class ScaleFastController(object):
 
             if suffix:
                 outputGlyphName = '{0}{1}'.format(glyphName, suffix)
-            font.insertGlyph(scaledGlyph, outputGlyphName)
+
+            # RF3
+            if version >= "3.0.0":
+                scaledGlyph.name = outputGlyphName
+                font[outputGlyphName] = scaledGlyph
+            # RF1
+            else:
+                font.insertGlyph(scaledGlyph, name=outputGlyphName)
 
             scaledGlyph = font[outputGlyphName]
 

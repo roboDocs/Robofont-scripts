@@ -58,7 +58,12 @@ def getRefStems(font, slantedSection=False):
             glyph = freezeGlyph(baseGlyph)
             width = glyph.width
 
-            glyph.skew(-angle)
+            # RF3
+            if version >= "3.0.0":
+                glyph.skewBy((-angle, 0))
+            # RF1
+            else:
+                glyph.skew(-angle)
 
             xMin, yMin, xMax, yMax = getGlyphBox(glyph)
             xCenter = width / 2
