@@ -1,7 +1,14 @@
 #coding=utf-8
 from __future__ import division
 
-from robofab.world import RGlyph
+from mojo.roboFont import version
+# RF3
+if version >= "3.0.0":
+    from mojo.roboFont import RGlyph
+# RF1
+else:
+    from robofab.world import RGlyph
+
 from mutatorMath.objects.location import Location
 from mutatorMath.objects.mutator import buildMutator
 
@@ -118,16 +125,16 @@ class MutatorScaleEngine:
         scale = (1, 1)
         width = 1
 
-        if scalingParameters.has_key('width'):
+        if 'width' in scalingParameters:
             width = scalingParameters['width']
             scale = (width, 1)
 
-        if scalingParameters.has_key('scale'):
+        if 'scale' in scalingParameters:
             scale = scalingParameters['scale']
             if isinstance(scale, (float, int)):
                 scale = (scale, scale)
 
-        elif  scalingParameters.has_key('targetHeight') and scalingParameters.has_key('referenceHeight'):
+        elif 'targetHeight' in scalingParameters and 'referenceHeight' in scalingParameters:
             targetHeight = scalingParameters['targetHeight']
             referenceHeight = scalingParameters['referenceHeight']
             scale = (width, targetHeight, referenceHeight)
@@ -178,7 +185,7 @@ class MutatorScaleEngine:
     def removeMaster(self, font):
         """Remove a MutatorScaleFont from masters."""
         name = makeListFontName(font)
-        if self.masters.has_key(name):
+        if name in self.masters:
             self.masters.pop(name, 0)
         self.update()
 

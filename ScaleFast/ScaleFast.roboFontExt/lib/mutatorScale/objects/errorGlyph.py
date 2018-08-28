@@ -47,7 +47,12 @@ class ErrorGlyph(RGlyph):
         self.width = 500
         self._drawError(errorName)
         scale = upm / 1000
-        self.scale((scale, scale))
+        # RF3
+        if version >= "3.0.0":
+            self.scaleBy((scale, scale))            
+        # RF1
+        else:
+            self.scale((scale, scale))
 
     def _setSize(self, size):
         self.si = size

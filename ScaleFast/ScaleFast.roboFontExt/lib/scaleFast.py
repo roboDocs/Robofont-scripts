@@ -1,6 +1,12 @@
 #coding=utf-8
 from __future__ import division
 
+from importlib import reload
+import mutatorScale.objects.scaler
+reload(mutatorScale.objects.scaler)
+
+from mojo.roboFont import version
+
 __version__ = '0.93.8'
 
 """
@@ -349,12 +355,12 @@ class ScaleFastController(object):
 
         # SplitView: glyph preview and settings hidden from view on the right
         panes = [
-            dict(view=self.controlsBox, identifier='controls', minSize=375, maxSize=375),
+            dict(view=self.controlsBox, identifier='controls'), # , minSize=375, maxSize=375
             dict(view=self.glyphPreviewBox, identifier='glyphPreview'),
-            dict(view=self.scaleFastSettings, identifier='glyphPreviewSettings', size=0)
+            dict(view=self.scaleFastSettings, identifier='glyphPreviewSettings'), # size=0
         ]
 
-        self.w.glyphSplitView = SplitView((0, 0, -0, -0), panes)
+        self.w.glyphSplitView = SplitView((0, 0, -0, -0), panes, dividerStyle='thin')
 
         # global variables
 
@@ -434,7 +440,7 @@ class ScaleFastController(object):
         self.sheet.title.getNSTextField().setTextColor_(NSColor.colorWithCalibratedRed_green_blue_alpha_(0.5, 0.5, 0.5, 1))
         self.sheet.inner = Box((10, 37, -10, -10))
         self.sheet.inner.destinationFontTitle = TextBox((10, 13, 130, 22), 'Destination font')
-        self.sheet.inner.destinationFont = PopUpButton((140, 13, -10, 22), ['New font'] + self.availableFonts.keys())
+        self.sheet.inner.destinationFont = PopUpButton((140, 13, -10, 22), ['New font'] + list(self.availableFonts.keys()))
         self.sheet.inner.options = Tabs((5, 52, -5, -37), ['Current', 'Batch'])
 
         current = self.sheet.inner.options[0]
@@ -503,7 +509,12 @@ class ScaleFastController(object):
         newFont = not destinationFontName in self.availableFonts
         initialSettings = self._getCurrentSettings()
 
-        font = self.availableFonts[destinationFontName]['font'] if not newFont else RFont(showUI=False)
+        # RF3
+        if version >= "3.0.0":
+            font = self.availableFonts[destinationFontName]['font'] if not newFont else RFont(showInterface=False)
+        # RF1
+        else:
+            font = self.availableFonts[destinationFontName]['font'] if not newFont else RFont(showUI=False)
 
         self.sheet.progress = ProgressBar((15, 11, 190, 16), isIndeterminate=True)
         self.sheet.progress.start()
@@ -536,9 +547,16 @@ class ScaleFastController(object):
                     suffix = generationItem['suffix']
                     font = self.generateGlyphsToFont(font, glyphset, settings, suffix)
 
-        if newFont:
-            font.showUI()
-        font.update()
+        # RF3
+        if version >= "3.0.0":
+            if newFont:
+                font.showInterface()
+            font.changed()
+        # RF1
+        else:
+            if newFont:
+                font.showUI()
+            font.update()
 
         self._applySettingsWithUI(initialSettings)
 
@@ -787,7 +805,13 @@ class ScaleFastController(object):
             for items in ['contours', 'anchors','components']:
                 if items in ['contours', 'anchors'] or (items == 'components' and transformations['keepSidebearings'] == True):
                     for item in getattr(glyph, items):
-                        item.move((trackingValue, 0))
+                        # RF3
+                        if version >= "3.0.0":
+                            item.moveBy((trackingValue, 0))
+                        # RF1
+                        else:
+                            item.move((trackingValue, 0))
+
             glyph.width += (trackingValue * 2)
 
         elif trackingUnits == '%':
@@ -1051,7 +1075,7 @@ class ScaleFastController(object):
         name = makeListFontName(font)
         masterFontsItems = self.masterFontsList.get()
 
-        if not self.availableFonts.has_key(name):
+        if not name in self.availableFonts:
             self.availableFonts[name] = {'font':font, 'selected':False, 'vstem':None, 'hstem':None, 'familyName':font.info.familyName, 'styleName':font.info.styleName}
             newListItem = {
                 self.includedGlyph:False,
@@ -1071,7 +1095,7 @@ class ScaleFastController(object):
         masterFontsItems = self.masterFontsList.get()
 
         # remove font from available fonts
-        if self.availableFonts.has_key(name):
+        if name in self.availableFonts:
             selected = self.availableFonts[name]['selected']
             self.availableFonts.pop(name, 0)
             if selected == True:
@@ -1146,7 +1170,7 @@ class ScaleFastController(object):
         for dimension in ['xHeight','capHeight','ascender','descender','italicAngle','unitsPerEm']:
             setattr(font.info, dimension, getattr(fontToCopy.info, dimension))
 
-        if fontToCopy.lib.has_key('com.typemytype.robofont.italicSlantOffset'):
+        if 'com.typemytype.robofont.italicSlantOffset' in fontToCopy.lib:
             font.lib['com.typemytype.robofont.italicSlantOffset'] = fontToCopy.lib['com.typemytype.robofont.italicSlantOffset']
 
 
@@ -1183,7 +1207,13 @@ class ScaleFastController(object):
             if self.currentFontName in self.cachedFonts:
                 previewFont = self.cachedFonts[self.currentFontName]
             else:
-                previewFont = RFont(showUI=False)
+                # RF3
+                if version >= "3.0.0":
+                    previewFont = RFont(showInterface=False)
+                # RF1
+                else:
+                    previewFont = RFont(showUI=False)
+
                 self._copyFontProperties(previewFont, currentFont)
 
             glyphNames = {}
@@ -1339,7 +1369,7 @@ class ScaleFastController(object):
 
 
     def getPresetsList(self, font):
-        # if font is not None and font.lib.has_key('com.loicsander.scaleFast.presets'):
+        # if font is not None and 'com.loicsander.scaleFast.presets' in font.lib:
         #     return font.lib['com.loicsander.scaleFast.presets']
         # return []
         pass

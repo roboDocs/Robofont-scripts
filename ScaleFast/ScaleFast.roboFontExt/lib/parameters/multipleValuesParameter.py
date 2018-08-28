@@ -19,7 +19,7 @@ class BaseParameter(object):
         if (master is not None) and (isinstance(master, self.__class__)):
             self.masters.append(master)
             if mode is None:
-                print 'A slave parameter requires a mode (type of relationship to its master parameter).'
+                print('A slave parameter requires a mode (type of relationship to its master parameter).')
                 return
         elif master is None:
             self.free = True
@@ -286,7 +286,7 @@ fontWeight.set(105)
 #smallCapsWeight.setFree(True)
 #smallCapsWeight.setRatio(0.1)
 #smallCapsWeight.submit(fontWeight)
-print fontWeight.get(), capWeight.get(), smallCapsWeight.get()
-print fontWeight.getRatio(), capWeight.getRatio(), smallCapsWeight.getRatio()
-print fontWeight.asDict()
+print(fontWeight.get(), capWeight.get(), smallCapsWeight.get())
+print(fontWeight.getRatio(), capWeight.getRatio(), smallCapsWeight.getRatio())
+print(fontWeight.asDict())
 

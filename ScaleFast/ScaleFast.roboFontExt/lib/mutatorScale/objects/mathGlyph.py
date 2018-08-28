@@ -1,7 +1,6 @@
 import weakref
 
 from mojo.roboFont import version
-
 # RF3
 if version >= "3.0.0":
     from mojo.roboFont import RGlyph
@@ -153,7 +152,7 @@ class FilterRedundantPointPen(AbstractPointPen):
                     # gather preceding off curves
                     testOffCurves = []
                     lastPoint = None
-                    for i in xrange(len(points)):
+                    for i in range(len(points)):
                         i = -i - 1
                         testPoint = points[i]
                         testSegmentType = testPoint[1]
@@ -332,21 +331,21 @@ class MathGlyph(object):
         # adapted from robofab.objects.objectsBase.RGlyph._anchorCompare
         selfAnchors = {}
         for pt, name in self.anchors:
-            if not selfAnchors.has_key(name):
+            if not name in selfAnchors:
                 selfAnchors[name] = []
             selfAnchors[name].append(pt)
         otherAnchors = {}
         for pt, name in other.anchors:
-            if not otherAnchors.has_key(name):
+            if not name in otherAnchors:
                 otherAnchors[name] = []
             otherAnchors[name].append(pt)
         compatAnchors = set(selfAnchors.keys()) & set(otherAnchors.keys())
         finalSelfAnchors = {}
         finalOtherAnchors = {}
         for name in compatAnchors:
-            if not finalSelfAnchors.has_key(name):
+            if not name in finalSelfAnchors:
                 finalSelfAnchors[name] = []
-            if not finalOtherAnchors.has_key(name):
+            if not name in finalOtherAnchors:
                 finalOtherAnchors[name] = []
             selfList = selfAnchors[name]
             otherList = otherAnchors[name]
@@ -366,21 +365,21 @@ class MathGlyph(object):
         #
         selfComponents = {}
         for baseName, transformation in self.components:
-            if not selfComponents.has_key(baseName):
+            if not baseName in selfComponents:
                 selfComponents[baseName] = []
             selfComponents[baseName].append(transformation)
         otherComponents = {}
         for baseName, transformation in other.components:
-            if not otherComponents.has_key(baseName):
+            if not baseName in otherComponents:
                 otherComponents[baseName] = []
             otherComponents[baseName].append(transformation)
         compatComponents = set(selfComponents.keys()) & set(otherComponents.keys())
         finalSelfComponents = {}
         finalOtherComponents = {}
         for baseName in compatComponents:
-            if not finalSelfComponents.has_key(baseName):
+            if not baseName in finalSelfComponents:
                 finalSelfComponents[baseName] = []
-            if not finalOtherComponents.has_key(baseName):
+            if not baseName in finalOtherComponents:
                 finalOtherComponents[baseName] = []
             selfList = selfComponents[baseName]
             otherList = otherComponents[baseName]

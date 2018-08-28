@@ -269,7 +269,7 @@ class SingleValueParameter(object):
             slave.update()
 
     def _checkValue(self, value):
-        if isinstance(value, str) or isinstance(value, unicode):
+        if isinstance(value, str): # or isinstance(value, unicode):
             s = re.search(r'(\+\+|--)(\d*\.?\d*)', value)
             if s is not None:
                 offset = float(s.group(2))
@@ -307,6 +307,6 @@ class SingleValueParameter(object):
 
 # fontWeight.set(100)
 
-# print fontWeight.digest()
-# print capWeight.digest()
-# print smallCapsWeight.digest()
+# print(fontWeight.digest())
+# print(capWeight.digest())
+# print(smallCapsWeight.digest())

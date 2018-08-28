@@ -239,15 +239,20 @@ def findDuplicatePoints(segments):
     for seg in segments:
         for (x, y) in seg:
             p = round(x, 4), round(y, 4)
-            if counter.has_key(p):
+            if p in counter:
                 counter[p] += 1
-            elif not counter.has_key(p):
+            elif not p in counter:
                 counter[p] = 1
     return [key for key in counter if counter[key] > 1]
 
 
 def getGlyphBox(glyph):
-    pen = BoundsPen(glyph.getParent())
+    # RF3
+    if version >= "3.0.0":
+        pen = BoundsPen(glyph.font)
+    # RF1
+    else:
+        pen = BoundsPen(glyph.getParent())
     glyph.draw(pen)
     return pen.bounds
 
