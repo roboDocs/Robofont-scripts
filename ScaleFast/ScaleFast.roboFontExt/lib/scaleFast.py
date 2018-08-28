@@ -1,12 +1,6 @@
 #coding=utf-8
 from __future__ import division
 
-from importlib import reload
-import mutatorScale.objects.scaler
-reload(mutatorScale.objects.scaler)
-
-from mojo.roboFont import version
-
 __version__ = '0.93.8'
 
 """
@@ -509,12 +503,7 @@ class ScaleFastController(object):
         newFont = not destinationFontName in self.availableFonts
         initialSettings = self._getCurrentSettings()
 
-        # RF3
-        if version >= "3.0.0":
-            font = self.availableFonts[destinationFontName]['font'] if not newFont else RFont(showInterface=False)
-        # RF1
-        else:
-            font = self.availableFonts[destinationFontName]['font'] if not newFont else RFont(showUI=False)
+        font = self.availableFonts[destinationFontName]['font'] if not newFont else RFont(showInterface=False)
 
         self.sheet.progress = ProgressBar((15, 11, 190, 16), isIndeterminate=True)
         self.sheet.progress.start()
@@ -547,16 +536,9 @@ class ScaleFastController(object):
                     suffix = generationItem['suffix']
                     font = self.generateGlyphsToFont(font, glyphset, settings, suffix)
 
-        # RF3
-        if version >= "3.0.0":
-            if newFont:
-                font.openInterface()
-            font.changed()
-        # RF1
-        else:
-            if newFont:
-                font.showUI()
-            font.update()
+        if newFont:
+            font.openInterface()
+        font.changed()
 
         self._applySettingsWithUI(initialSettings)
 
@@ -776,13 +758,8 @@ class ScaleFastController(object):
             if suffix:
                 outputGlyphName = '{0}{1}'.format(glyphName, suffix)
 
-            # RF3
-            if version >= "3.0.0":
-                scaledGlyph.name = outputGlyphName
-                font[outputGlyphName] = scaledGlyph
-            # RF1
-            else:
-                font.insertGlyph(scaledGlyph, name=outputGlyphName)
+            scaledGlyph.name = outputGlyphName
+            font[outputGlyphName] = scaledGlyph
 
             scaledGlyph = font[outputGlyphName]
 
@@ -812,12 +789,7 @@ class ScaleFastController(object):
             for items in ['contours', 'anchors','components']:
                 if items in ['contours', 'anchors'] or (items == 'components' and transformations['keepSidebearings'] == True):
                     for item in getattr(glyph, items):
-                        # RF3
-                        if version >= "3.0.0":
-                            item.moveBy((trackingValue, 0))
-                        # RF1
-                        else:
-                            item.move((trackingValue, 0))
+                        item.moveBy((trackingValue, 0))
 
             glyph.width += (trackingValue * 2)
 
@@ -1214,12 +1186,7 @@ class ScaleFastController(object):
             if self.currentFontName in self.cachedFonts:
                 previewFont = self.cachedFonts[self.currentFontName]
             else:
-                # RF3
-                if version >= "3.0.0":
-                    previewFont = RFont(showInterface=False)
-                # RF1
-                else:
-                    previewFont = RFont(showUI=False)
+                previewFont = RFont(showInterface=False)
 
                 self._copyFontProperties(previewFont, currentFont)
 

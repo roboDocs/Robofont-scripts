@@ -249,8 +249,8 @@ class BaseParameter(object):
             parameter.enslave(self)
 
     def _checkValue(self, value):
-        if isinstance(value, str) or isinstance(value, unicode):
-            s = re.search('(\+\+|--)(\d*\.?\d*)', value)
+        if isinstance(value, str):
+            s = re.search(r'(\+\+|--)(\d*\.?\d*)', value)
             if s is not None:
                 offset = float(s.group(2))
                 if s.group(1) == '++':
@@ -278,15 +278,18 @@ class BaseParameter(object):
         return value
 
 # Testing stuff
-fontWeight = BaseParameter('fontWeight', 'int', (1,500), 80)
-capWeight = BaseParameter('capWeight', 'int', (1,500), 90, mode='ratio', master=fontWeight)
-smallCapsWeight = BaseParameter('capWeight', 'int', (1,500), 85, mode='ratio', master=fontWeight)
 
-fontWeight.set(105)
-#smallCapsWeight.setFree(True)
-#smallCapsWeight.setRatio(0.1)
-#smallCapsWeight.submit(fontWeight)
-print(fontWeight.get(), capWeight.get(), smallCapsWeight.get())
-print(fontWeight.getRatio(), capWeight.getRatio(), smallCapsWeight.getRatio())
-print(fontWeight.asDict())
+if __name__ == '__main__':
+
+    fontWeight = BaseParameter('fontWeight', 'int', (1,500), 80)
+    capWeight = BaseParameter('capWeight', 'int', (1,500), 90, mode='ratio', master=fontWeight)
+    smallCapsWeight = BaseParameter('capWeight', 'int', (1,500), 85, mode='ratio', master=fontWeight)
+
+    fontWeight.set(105)
+    #smallCapsWeight.setFree(True)
+    #smallCapsWeight.setRatio(0.1)
+    #smallCapsWeight.submit(fontWeight)
+    print(fontWeight.get(), capWeight.get(), smallCapsWeight.get())
+    print(fontWeight.getRatio(), capWeight.getRatio(), smallCapsWeight.getRatio())
+    print(fontWeight.asDict())
 
