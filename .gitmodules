@@ -1,0 +1,3 @@
+[submodule "ScaleFast/ScaleFast.roboFontExt/lib/mutatorScale"]
+	path = ScaleFast/ScaleFast.roboFontExt/lib/mutatorScale
+	url = git@github.com:roboDocs/MutatorScale.git
