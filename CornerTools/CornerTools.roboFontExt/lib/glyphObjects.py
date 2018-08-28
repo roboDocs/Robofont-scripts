@@ -7,15 +7,7 @@ Custom CocoaPen that displays a glyph with OnCurve & OffCurve points
 
 from fontTools.pens.basePen import BasePen
 from fontTools.pens.cocoaPen import CocoaPen
-
-from mojo.roboFont import version
-# RF3
-if version >= "3.0.0":
-    from ufoLib.pointPen import AbstractPointPen, PointToSegmentPen
-# RF1
-else:
-    from robofab.pens.pointPen import AbstractPointPen
-    from robofab.pens.adapterPens import PointToSegmentPen
+from ufoLib.pointPen import AbstractPointPen, PointToSegmentPen
 
 class CocoaGlyphPen(BasePen):
 
@@ -99,16 +91,8 @@ class CocoaGlyphPen(BasePen):
         cocoaPen.lineTo((x, y))
 
 from math import floor, cos, sin, hypot, pi, atan2, degrees, sqrt
-
-# RF3
-if version >= "3.0":
-    from fontPens.thresholdPen import thresholdGlyph
-    from mojo.roboFont import RGlyph, RPoint
-# RF1
-else:
-    from robofab.pens.filterPen import thresholdGlyph
-    from robofab.objects.objectsRF import RGlyph, RPoint
-
+from fontPens.thresholdPen import thresholdGlyph
+from mojo.roboFont import RGlyph, RPoint
 from mojo.drawingTools import fill, stroke, rect, oval, save, restore, text, scale, fontSize
 from mojo.UI import CurrentGlyphWindow
 from AppKit import NSColor
@@ -1727,15 +1711,7 @@ class IntelGlyph(object):
     def __init__(self, glyph=None):
         self._sourceGlyph = glyph
         if glyph is not None:
-
-            # RF3
-            if version >= "3.0.0":
-                selectedPoints = glyph.selectedPoints            
-            # RF1
-            else:
-                selectedPoints = glyph.selection
-
-            if not len(selectedPoints):
+            if not len(glyph.selectedPoints):
                 '''
                 If there’s no points selection to get
                 go through the IntelOutlinePen (faster)
@@ -1745,7 +1721,7 @@ class IntelGlyph(object):
                 self.contours = pen.get()
                 for contour in self.contours:
                     contour.cleanCurves()
-            elif len(selectedPoints):
+            elif len(glyph.selectedPoints):
                 '''
                 If there are selected points
                 go through appendContour to gather selection info
