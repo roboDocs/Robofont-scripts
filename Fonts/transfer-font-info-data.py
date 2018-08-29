@@ -29,7 +29,7 @@ def breakCamelCase(string, strip=None):
     return ' '.join(ws)
 
 def splitFontInfo(fontInfo, selected=False):
-    return {key: {u'\u2192':selected, 'attribute':breakCamelCase(key, ['postscript', 'openType']), 'value':unicode(value)}  for key, value in fontInfo.items()}
+    return {key: {u'\u2192':selected, 'attribute':breakCamelCase(key, ['postscript', 'openType']), 'value':str(value)}  for key, value in fontInfo.items()}
 
 def listFontNames(fontList):
     fontNames = []
@@ -286,7 +286,7 @@ class FontInfoTransferController(BaseWindowController):
             '\n'.join(attributesToTransfer.keys())
         ]
 
-        print '\n'.join(digest)
+        print('\n'.join(digest))
 
 
     def buildTables(self, selectAll=False):

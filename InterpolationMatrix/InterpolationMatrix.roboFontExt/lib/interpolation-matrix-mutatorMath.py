@@ -307,7 +307,6 @@ class InterpolationMatrixController:
                         if mutator is not None:
                             instanceLocation = Location(**matrixSpot.getWeightsAsDict('horizontal', 'vertical'))
                             instanceStart = time()
-                            # instanceGlyph = RGlyph()
                             iGlyph = mutator.makeInstance(instanceLocation)
                             instanceGlyph = iGlyph.extractGlyph(RGlyph().naked())
                             instanceStop = time()
