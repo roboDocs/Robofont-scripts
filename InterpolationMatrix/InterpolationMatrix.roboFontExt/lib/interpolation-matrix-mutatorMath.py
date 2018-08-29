@@ -1,6 +1,5 @@
 #coding=utf-8
 
-
 '''
 Interpolation Matrix
 v0.6.5b
@@ -9,14 +8,16 @@ in a grid/matrix, allowing for easy preview of inter/extrapolation behavior of l
 As the math is the same to Superpolator’s, the preview is as close as can be to Superpolator output,
 although you don’t have as fine a coordinate system with this matrix (up to 15x15).
 
-(The standalone script will work only on Robofont from versions 1.6 onward)
-(For previous versions of Robofont (tested on 1.5 only) you can use the extension)
+### (The standalone script will work only on Robofont from versions 1.6 onward)
+### (For previous versions of Robofont (tested on 1.5 only) you can use the extension)
+
+updated for RF3 [WIP]
 
 Loïc Sander
 '''
 
-from _mutatorMath.objects.location import Location
-from _mutatorMath.objects.mutator import buildMutator
+from mutatorMath.objects.location import Location
+from mutatorMath.objects.mutator import buildMutator
 from fontMath.mathGlyph import MathGlyph
 from fontMath.mathInfo import MathInfo
 from fontMath.mathKerning import MathKerning
@@ -47,7 +48,7 @@ Transparent = NSColor.colorWithCalibratedRed_green_blue_alpha_(0, 0, 0, 0)
 def makePreviewGlyph(glyph, fixedWidth=True):
     if glyph is not None:
         components = glyph.components
-        font = glyph.getParent()
+        font = glyph.font
         previewGlyph = RGlyph()
 
         if font is not None:
@@ -57,8 +58,8 @@ def makePreviewGlyph(glyph, fixedWidth=True):
                     base = makePreviewGlyph(base, False)
                 decomponent = RGlyph()
                 decomponent.appendGlyph(base)
-                decomponent.scale((component.scale[0], component.scale[1]))
-                decomponent.move((component.offset[0], component.offset[1]))
+                decomponent.scaleBy((component.scale[0], component.scale[1]))
+                decomponent.moveBy((component.offset[0], component.offset[1]))
                 previewGlyph.appendGlyph(decomponent)
             for contour in glyph.contours:
                 previewGlyph.appendContour(contour)
@@ -66,11 +67,11 @@ def makePreviewGlyph(glyph, fixedWidth=True):
             if fixedWidth:
                 previewGlyph.width = 1000
                 previewGlyph.leftMargin = previewGlyph.rightMargin = (previewGlyph.leftMargin + previewGlyph.rightMargin)/2
-                previewGlyph.scale((.75, .75), (previewGlyph.width/2, 0))
-                previewGlyph.move((0, -50))
+                previewGlyph.scaleBy((.75, .75), (previewGlyph.width/2, 0))
+                previewGlyph.moveBy((0, -50))
 
             scaleFactor = 1000.0 / font.info.unitsPerEm
-            previewGlyph.scale((scaleFactor, scaleFactor), (previewGlyph.width/2, 0))
+            previewGlyph.scaleBy((scaleFactor, scaleFactor), (previewGlyph.width/2, 0))
 
             previewGlyph.name = glyph.name
 
@@ -173,12 +174,12 @@ class InterpolationMatrixController:
 
                 spotKey = '%s%s'%(ch, j)
 
-                if not self.matrixSpots.has_key(spotKey):
+                if not spotKey in self.matrixSpots:
                     matrixSpot = MatrixSpot((i, j))
                     matrixSpot.setWeights(((i+1)*100, (j+1)*100))
                     self.matrixSpots[spotKey] = matrixSpot
 
-                elif self.matrixSpots.has_key(spotKey):
+                elif spotKey in self.matrixSpots:
                     matrixSpot = self.matrixSpots[spotKey]
 
                 setattr(matrix, spotKey, Group(((i*cellXSize)-i, (j*cellYSize), cellXSize, cellYSize)))
@@ -320,7 +321,7 @@ class InterpolationMatrixController:
         # stop = time()
         # if count:
         #     wholeTime = (stop-start)*1000
-        #     print 'made %s instances in %0.3fms, average: %0.3fms' % (count, wholeTime, wholeTime/count)
+        #     print('made %s instances in %0.3fms, average: %0.3fms' % (count, wholeTime, wholeTime/count))
 
     def generationSheet(self, sender):
 
@@ -455,10 +456,10 @@ class InterpolationMatrixController:
                 spotsList = self.parseSpotsList(spotsInput)
 
                 if (spotsList is None):
-                    print u'Interpolation matrix — at least one location is required.'
+                    print(u'Interpolation matrix — at least one location is required.')
                     return
 
-                # print ['%s%s'%(getKeyForValue(i).upper(), j+1) for i, j in spotsList]
+                # print(['%s%s'%(getKeyForValue(i).upper(), j+1) for i, j in spotsList])
 
             masterLocations = self.getMasterLocations()
 
@@ -678,15 +679,15 @@ class InterpolationMatrixController:
                     if UI:
                         f = RFont(path)
                 elif (newFont is not None):
-                    print u'Couldn’t save font to UFO.'
+                    print(u'Couldn’t save font to UFO.')
             except:
-                print u'Couldn’t finish generating, something happened…'
+                print(u'Couldn’t finish generating, something happened…')
                 return
             finally:
                 progress.close()
 
                 if doReport:
-                    print '\n'.join(report)
+                    print('\n'.join(report))
 
             # stop = time()
             # print 'generated in %0.3f' % ((stop-start)*1000)
@@ -836,10 +837,10 @@ class InterpolationMatrixController:
         finally:
             progress.close()
 
-        print u'\n*   Compatible glyphs: %s'%(len(glyphList) - incompatibleGlyphs)
-        print u'**  Incompatible glyphs: %s'%(incompatibleGlyphs)
-        print u'*** Stray glyphs: %s\n– %s\n'%(len(strayGlyphs),u'\n– '.join(list(strayGlyphs)))
-        print '\n'.join(digest)
+        print(u'\n*   Compatible glyphs: %s'%(len(glyphList) - incompatibleGlyphs))
+        print(u'**  Incompatible glyphs: %s'%(incompatibleGlyphs))
+        print(u'*** Stray glyphs: %s\n– %s\n'%(len(strayGlyphs),u'\n– '.join(list(strayGlyphs))))
+        print('\n'.join(digest))
 
     def glyphPreviewCellSize(self, posSize, axesGrid):
         x, y, w, h = posSize
@@ -1168,7 +1169,7 @@ class InterpolationMatrixController:
                 self.reallocateWeights()
                 self.updateMatrix()
             else:
-                print 'not a valid matrix file'
+                print('not a valid matrix file')
 
 
     def changeGlyph(self, sender):

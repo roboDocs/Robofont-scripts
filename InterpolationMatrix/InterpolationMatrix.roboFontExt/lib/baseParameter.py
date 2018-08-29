@@ -244,18 +244,18 @@ class SingleValueParameter(object):
         elif master is None:
             self.master = None
 
-    def setLimits(self, (minValue, maxValue)):
-        self.limits = (minValue, maxValue)
+    def setLimits(self, minMaxValues):
+        self.limits = minMaxValues
         for slave in self.slaves:
-            slave.limits = (minValue, maxValue)
+            slave.limits = minMaxValues
             slave.value = slave.get()
             slave.update()
 
     def _checkValue(self, value):
         if value == 'R':
             self.reset()
-        elif isinstance(value, str) or isinstance(value, unicode):
-            s = re.search('(\+\+|--)(\d*\.?\d*)', value)
+        elif isinstance(value, str): # or isinstance(value, unicode):
+            s = re.search(r'(\+\+|--)(\d*\.?\d*)', value)
             if s is not None:
                 offset = float(s.group(2))
                 if s.group(1) == '++':
@@ -286,12 +286,15 @@ class SingleValueParameter(object):
         return value
 
 # Testing stuff
-# fontWeight = SingleValueParameter('fontWeight', 80, (1,500), 'int')
-# capWeight = SingleValueParameter('capWeight', 100, (1,500), 'int', mode='ratio', master=fontWeight)
-# smallCapsWeight = SingleValueParameter('smallCapsWeight', 90, (1,500), 'int', mode='ratio', master=fontWeight)
 
-# fontWeight.set(100)
+if __name__ == '__main__':
 
-# print fontWeight.digest()
-# print capWeight.digest()
-# print smallCapsWeight.digest()
+    fontWeight = SingleValueParameter('fontWeight', 80, (1,500), 'int')
+    capWeight = SingleValueParameter('capWeight', 100, (1,500), 'int', mode='ratio', master=fontWeight)
+    smallCapsWeight = SingleValueParameter('smallCapsWeight', 90, (1,500), 'int', mode='ratio', master=fontWeight)
+
+    fontWeight.set(100)
+
+    print(fontWeight.digest())
+    print(capWeight.digest())
+    print(smallCapsWeight.digest())
