@@ -11,7 +11,8 @@ although you don’t have as fine a coordinate system with this matrix (up to 15
 ### (The standalone script will work only on Robofont from versions 1.6 onward)
 ### (For previous versions of Robofont (tested on 1.5 only) you can use the extension)
 
-updated for RF3 [WIP]
+>>> updated for RF3 by GF [WIP]
+>>> for RF1 version see tagged releases
 
 Loïc Sander
 '''
@@ -255,7 +256,7 @@ class InterpolationMatrixController:
                     l = Location(**matrixSpot.getWeightsAsDict('horizontal', 'vertical'))
                     masterGlyph = makePreviewGlyph(masterFont[glyphName])
                     if masterGlyph is not None:
-                        mutatorMasters.append((l, MathGlyph(masterGlyph)))
+                        mutatorMasters.append((l, MathGlyph(masterGlyph.naked())))
             elif (masterFont not in availableFonts):
                 masters.remove(matrixMaster)
 
@@ -306,9 +307,9 @@ class InterpolationMatrixController:
                         if mutator is not None:
                             instanceLocation = Location(**matrixSpot.getWeightsAsDict('horizontal', 'vertical'))
                             instanceStart = time()
-                            instanceGlyph = RGlyph()
+                            # instanceGlyph = RGlyph()
                             iGlyph = mutator.makeInstance(instanceLocation)
-                            instanceGlyph = iGlyph.extractGlyph(RGlyph())
+                            instanceGlyph = iGlyph.extractGlyph(RGlyph().naked())
                             instanceStop = time()
                             instanceTime.append((instanceStop-instanceStart)*1000)
                         else:
@@ -741,14 +742,14 @@ class InterpolationMatrixController:
         incompatibleGlyphs = []
 
         for glyphName in glyphSet:
-            masterGlyphs = [(masterLocation, MathGlyph(masterFont[glyphName])) for masterLocation, masterFont in masters]
+            masterGlyphs = [(masterLocation, MathGlyph(masterFont[glyphName].naked())) for masterLocation, masterFont in masters]
             try:
                 bias, gM = buildMutator(masterGlyphs)
                 newGlyph = RGlyph()
                 instanceGlyph = gM.makeInstance(instanceLocation)
                 if suffix is not None:
                     glyphName += suffix
-                targetFont.insertGlyph(instanceGlyph.extractGlyph(newGlyph), glyphName)
+                targetFont.insertGlyph(instanceGlyph.extractGlyph(newGlyph.naked()), glyphName)
             except:
                 incompatibleGlyphs.append(glyphName)
                 continue
